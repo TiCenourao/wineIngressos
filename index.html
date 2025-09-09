@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Validador de Ingressos</title>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; background: #f2f2f2; }
+    #reader { width: 300px; margin: 20px auto; }
+    .resultado { font-size: 20px; margin-top: 20px; padding: 15px; border-radius: 10px; }
+    .ok { background: #c8f7c5; color: #2d572c; }
+    .erro { background: #f7c5c5; color: #7d1d1d; }
+  </style>
+</head>
+<body>
+  <h1>🎟️ Verificação de Ingressos</h1>
+  <div id="reader"></div>
+  <div id="resultado" class="resultado"></div>
+
+  <script>
+  // Lista de ingressos direto no HTML
+  let ingressos = {
+    "98df9e4c-7a3a-4e1a-9af3-d3b26c9f8234": { "nome": "João", "usado": false },
+    "a1b2c3d4-e5f6-7890-abcd-1234567890ef": { "nome": "Maria", "usado": false },
+    "11111111-2222-3333-4444-555555555555": { "nome": "Carlos", "usado": false }
+  };
+
+  function verificarToken(token) {
+    const resultadoDiv = document.getElementById("resultado");
+
+    if (ingressos[token]) {
+      if (ingressos[token].usado === false) {
+        ingressos[token].usado = true;
+        resultadoDiv.className = "resultado ok";
+        resultadoDiv.innerText = `✅ Ingresso válido: ${ingressos[token].nome}`;
+      } else {
+        resultadoDiv.className = "resultado erro";
+        resultadoDiv.innerText = `❌ Ingresso já usado: ${ingressos[token].nome}`;
+      }
+    } else {
+      resultadoDiv.className = "resultado erro";
+      resultadoDiv.innerText = "❌ Token inválido!";
+    }
+  }
+
+  function iniciarCamera() {
+    const html5QrCode = new Html5Qrcode("reader");
+
+    html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 250 },
+      (decodedText) => {
+        verificarToken(decodedText.trim());
+      },
+      (errorMessage) => {
+        // erros de leitura ignorados
+      }
+    ).catch(err => {
+      console.error("Erro ao iniciar câmera:", err);
+    });
+  }
+
+  iniciarCamera();
+</script>
+
+</body>
+</html>
