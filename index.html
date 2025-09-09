@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Validador de Ingressos</title>
+  <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
   <style>
     body {
@@ -25,7 +26,7 @@
     }
 
     #reader {
-      width: 95%;
+      width: 90vh;
       max-width: 600px;
       height: 60vh;
       margin: 10px auto;
@@ -74,11 +75,13 @@
 
   <!-- Áudio de confirmação -->
   <audio id="beep" src="beep.mp3"></audio>
+  <audio id="beepErro" src="beepErro.mp3"></audio>
 
   <script>
     let ingressos = {};
     let ultimoScan = 0;
     const beep = document.getElementById("beep");
+    const beepErro = document.getElementById("beepErro");
 
     async function carregarIngressos() {
       try {
@@ -111,10 +114,12 @@
         } else {
           resultadoDiv.className = "resultado erro";
           resultadoDiv.innerText = `❌ Ingresso já usado: ${ingressos[token].nome}`;
+          beepErro.Play();
         }
       } else {
         resultadoDiv.className = "resultado erro";
         resultadoDiv.innerText = "❌ Token inválido!";
+        beepErro.Play();
       }
     }
 
