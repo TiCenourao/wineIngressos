@@ -77,12 +77,12 @@
 
   <script>
     let ingressos = {};
-    let ultimoScan = 0; // controla cooldown de 2 segundos
+    let ultimoScan = 0;
     const beep = document.getElementById("beep");
 
     async function carregarIngressos() {
       try {
-        const resp = await fetch("tokens.json"); // JSON hospedado no GitHub Pages
+        const resp = await fetch("tokens.json");
         ingressos = await resp.json();
         iniciarCamera();
       } catch (err) {
@@ -93,17 +93,21 @@
 
     function verificarToken(token) {
       const agora = Date.now();
-      if (agora - ultimoScan < 2000) return; // ignora leituras a menos de 2s
+      if (agora - ultimoScan < 2000) return; // delay de 2s
       ultimoScan = agora;
 
       const resultadoDiv = document.getElementById("resultado");
 
       if (ingressos[token]) {
-        if (!ingressos[token].usado) {
+        // verifica LocalStorage
+        const usadoLocal = localStorage.getItem(token) === "true";
+
+        if (!usadoLocal) {
           ingressos[token].usado = true;
+          localStorage.setItem(token, "true"); // salva status
           resultadoDiv.className = "resultado ok";
           resultadoDiv.innerText = `✅ Ingresso válido: ${ingressos[token].nome}`;
-          beep.play(); // toca som de confirmação
+          beep.play();
         } else {
           resultadoDiv.className = "resultado erro";
           resultadoDiv.innerText = `❌ Ingresso já usado: ${ingressos[token].nome}`;
@@ -121,7 +125,7 @@
         { facingMode: "environment" },
         { fps: 10, qrbox: { width: 350, height: 350 } },
         (decodedText) => verificarToken(decodedText.trim()),
-        (errorMessage) => {} // ignorar erros pequenos
+        (errorMessage) => {}
       ).catch(err => console.error("Erro ao iniciar câmera:", err));
     }
 
