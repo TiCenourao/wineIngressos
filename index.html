@@ -27,7 +27,7 @@
     #reader {
       width: 95%;
       max-width: 600px;
-      height: 60vh; /* ocupa boa parte da altura */
+      height: 60vh;
       margin: 10px auto;
       border: 3px solid #fff;
       border-radius: 12px;
@@ -73,12 +73,18 @@
   <footer>Powered by QR Scanner</footer>
 
   <script>
-    // Lista de ingressos direto no HTML
-    let ingressos = {
-      "98df9e4c-7a3a-4e1a-9af3-d3b26c9f8234": { "nome": "João", "usado": false },
-      "a1b2c3d4-e5f6-7890-abcd-1234567890ef": { "nome": "Maria", "usado": false },
-      "11111111-2222-3333-4444-555555555555": { "nome": "Carlos", "usado": false }
-    };
+    let ingressos = {};
+
+    async function carregarIngressos() {
+      try {
+        const resp = await fetch("tokens.json"); // Carrega a lista de ingressos gerada
+        ingressos = await resp.json();
+        iniciarCamera();
+      } catch (err) {
+        alert("Erro ao carregar a lista de ingressos!");
+        console.error(err);
+      }
+    }
 
     function verificarToken(token) {
       const resultadoDiv = document.getElementById("resultado");
@@ -103,19 +109,17 @@
 
       html5QrCode.start(
         { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 350, height: 350 } }, // maior área de leitura
+        { fps: 10, qrbox: { width: 350, height: 350 } },
         (decodedText) => {
           verificarToken(decodedText.trim());
         },
         (errorMessage) => {
           // erros de leitura ignorados
         }
-      ).catch(err => {
-        console.error("Erro ao iniciar câmera:", err);
-      });
+      ).catch(err => console.error("Erro ao iniciar câmera:", err));
     }
 
-    iniciarCamera();
+    carregarIngressos();
   </script>
 </body>
 </html>
