@@ -75,9 +75,10 @@
   <script>
     let ingressos = {};
 
+    // Carrega o JSON de ingressos do GitHub Pages
     async function carregarIngressos() {
       try {
-        const resp = await fetch("tokens.json"); // Carrega a lista de ingressos gerada
+        const resp = await fetch("tokens.json");
         ingressos = await resp.json();
         iniciarCamera();
       } catch (err) {
