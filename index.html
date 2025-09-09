@@ -18,16 +18,17 @@
     }
 
     h1 {
-      margin: 20px 0;
+      margin: 20px 0 10px;
       font-size: 26px;
       font-weight: 600;
       text-align: center;
     }
 
     #reader {
-      width: 90%;
-      max-width: 400px;
-      margin: 20px auto;
+      width: 95%;
+      max-width: 600px;
+      height: 60vh; /* ocupa boa parte da altura */
+      margin: 10px auto;
       border: 3px solid #fff;
       border-radius: 12px;
       overflow: hidden;
@@ -35,11 +36,11 @@
     }
 
     .resultado {
-      font-size: 20px;
+      font-size: 22px;
       margin-top: 20px;
-      padding: 15px 20px;
+      padding: 18px 22px;
       border-radius: 10px;
-      max-width: 400px;
+      max-width: 600px;
       text-align: center;
       font-weight: bold;
       transition: all 0.3s ease;
@@ -48,13 +49,13 @@
     .ok {
       background: #c8f7c5;
       color: #2d572c;
-      box-shadow: 0 0 10px rgba(0, 255, 0, 0.6);
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
     }
 
     .erro {
       background: #f7c5c5;
       color: #7d1d1d;
-      box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
     }
 
     footer {
@@ -102,7 +103,7 @@
 
       html5QrCode.start(
         { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 250, height: 250 } },
+        { fps: 10, qrbox: { width: 350, height: 350 } }, // maior área de leitura
         (decodedText) => {
           verificarToken(decodedText.trim());
         },
