@@ -72,8 +72,13 @@
   <div id="resultado" class="resultado"></div>
   <footer>Powered by QR Scanner</footer>
 
+  <!-- Áudio de confirmação -->
+  <audio id="beep" src="beep.mp3"></audio>
+
   <script>
     let ingressos = {};
+    let ultimoScan = 0; // controla cooldown de 2 segundos
+    const beep = document.getElementById("beep");
 
     async function carregarIngressos() {
       try {
@@ -87,6 +92,10 @@
     }
 
     function verificarToken(token) {
+      const agora = Date.now();
+      if (agora - ultimoScan < 2000) return; // ignora leituras a menos de 2s
+      ultimoScan = agora;
+
       const resultadoDiv = document.getElementById("resultado");
 
       if (ingressos[token]) {
@@ -94,6 +103,7 @@
           ingressos[token].usado = true;
           resultadoDiv.className = "resultado ok";
           resultadoDiv.innerText = `✅ Ingresso válido: ${ingressos[token].nome}`;
+          beep.play(); // toca som de confirmação
         } else {
           resultadoDiv.className = "resultado erro";
           resultadoDiv.innerText = `❌ Ingresso já usado: ${ingressos[token].nome}`;
