@@ -75,10 +75,9 @@
   <script>
     let ingressos = {};
 
-    // Carrega o JSON de ingressos do GitHub Pages
     async function carregarIngressos() {
       try {
-        const resp = await fetch("tokens.json");
+        const resp = await fetch("tokens.json"); // JSON hospedado no GitHub Pages
         ingressos = await resp.json();
         iniciarCamera();
       } catch (err) {
@@ -91,7 +90,7 @@
       const resultadoDiv = document.getElementById("resultado");
 
       if (ingressos[token]) {
-        if (ingressos[token].usado === false) {
+        if (!ingressos[token].usado) {
           ingressos[token].usado = true;
           resultadoDiv.className = "resultado ok";
           resultadoDiv.innerText = `✅ Ingresso válido: ${ingressos[token].nome}`;
@@ -111,12 +110,8 @@
       html5QrCode.start(
         { facingMode: "environment" },
         { fps: 10, qrbox: { width: 350, height: 350 } },
-        (decodedText) => {
-          verificarToken(decodedText.trim());
-        },
-        (errorMessage) => {
-          // erros de leitura ignorados
-        }
+        (decodedText) => verificarToken(decodedText.trim()),
+        (errorMessage) => {} // ignorar erros pequenos
       ).catch(err => console.error("Erro ao iniciar câmera:", err));
     }
 
